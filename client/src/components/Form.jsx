@@ -38,6 +38,8 @@ export default function Form({ apiEndpoint }) {
 
     if (result.code == 200) {
       setSuccess("Data saved successfully");
+      setName("");
+      setAmount("");
     } else {
       setError("Sorry, Data not saved successfully. Try again");
     }

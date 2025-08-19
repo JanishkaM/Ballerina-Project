@@ -1,5 +1,6 @@
-### There is all the API endpoints
+### Auth: obtain token (token = SECRET_KEY + user.id)
 POST http://localhost:9092/auth
+Content-Type: application/json
 
 {
   "email": "alice@example.com",
@@ -8,6 +9,7 @@ POST http://localhost:9092/auth
 
 ###
 POST http://localhost:9092/income/add
+Content-Type: application/json
 
 {
   "token": 9878788,
@@ -22,9 +24,16 @@ POST http://localhost:9092/income/add
 
 ###
 GET http://localhost:9092/income/all?token=9878788
+Content-Type: application/json
+
+###
+# Incomes filtered by month (e.g., August = 8)
+GET http://localhost:9092/income/all?token=9878788&month=8
+Content-Type: application/json
 
 ###
 DELETE http://localhost:9092/income/remove
+Content-Type: application/json
 
 {
   "id": 1,
@@ -33,6 +42,7 @@ DELETE http://localhost:9092/income/remove
 
 ###
 POST http://localhost:9092/expense/add
+Content-Type: application/json
 
 {
   "token": 9878788,
@@ -49,9 +59,18 @@ POST http://localhost:9092/expense/add
 GET http://localhost:9092/expense/all?token=9878788
 
 ###
+# Expenses filtered by month (e.g., August = 8)
+GET http://localhost:9092/expense/all?token=9878788&month=8
+
+###
 DELETE http://localhost:9092/expense/remove
+Content-Type: application/json
 
 {
   "id": 1,
   "token": 9878788
 }
+
+####
+# List users
+GET http://localhost:9092/users

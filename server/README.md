@@ -175,3 +175,7 @@ server/
 ## License
 
 This project is provided as-is by the author. Add a LICENSE file if you plan to distribute.
+
+## Reference
+https://medium.com/@arundeshan/ballerina-with-mysql-for-crud-operations-cd1c992e26bc
+https://ballerina.io/learn/by-example/

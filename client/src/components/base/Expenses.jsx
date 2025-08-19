@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import EmptyState from "../EmptyState";
+import LoadingState from "../LoadingState";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import {
@@ -18,26 +19,37 @@ import {
 export default function Expenses() {
   const [expenses, setExpenses] = useState([]);
   const [userID, setUserID] = useState("");
+  const [loading, setLoading] = useState(true);
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(
     `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
   );
 
   useEffect(() => {
-
     const userID = localStorage.getItem("userID");
     setUserID(Number(userID));
-
-    const fetchData = async () => {
-      const data = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/expense/all?token=${userID}`
-      );
-      const expenses = await data.json();
-      setExpenses(expenses);
-    };
-
-    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!userID) return;
+    setLoading(true);
+    const [year, month] = selectedMonth.split("-").map(Number);
+    const base = process.env.NEXT_PUBLIC_API_ENDPOINT;
+    const fetchMonth = async () => {
+      try {
+        const data = await fetch(
+          `${base}/expense/all?token=${userID}&month=${month}`
+        );
+        const expenses = await data.json();
+        setExpenses(Array.isArray(expenses) ? expenses : []);
+      } catch (e) {
+        setExpenses([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMonth();
+  }, [userID, selectedMonth]);
 
   const handleDelete = async (id) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/expense/remove`, {
@@ -56,8 +68,9 @@ export default function Expenses() {
   };
 
   const filteredExpenses = expenses.filter((expense) => {
-    const y = expense?.date?.year;
-    const m = expense?.date?.month;
+    // API now returns flat date fields: year, month
+    const y = expense?.year;
+    const m = expense?.month;
     if (!y || !m) return false;
     const key = `${y}-${String(m).padStart(2, "0")}`;
     return key === selectedMonth;
@@ -74,7 +87,9 @@ export default function Expenses() {
           className="rounded-md border px-3 py-2 text-sm"
         />
       </div>
-      {filteredExpenses.length === 0 ? (
+      {loading ? (
+        <LoadingState />
+      ) : filteredExpenses.length === 0 ? (
         <EmptyState />
       ) : (
         <ul className="space-y-3">

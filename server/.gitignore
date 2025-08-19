@@ -11,3 +11,5 @@
 # Logs and env
 *.log
 .env
+
+Config.toml

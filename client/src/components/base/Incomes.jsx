@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import EmptyState from "../EmptyState";
+import LoadingState from "../LoadingState";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import {
@@ -18,6 +19,7 @@ import {
 export default function Incomes() {
   const [incomes, setIncomes] = useState([]);
   const [userID, setUserID] = useState("");
+  const [loading, setLoading] = useState(true);
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(
     `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
@@ -26,17 +28,28 @@ export default function Incomes() {
   useEffect(() => {
     const userID = localStorage.getItem("userID");
     setUserID(Number(userID));
-
-    const fetchData = async () => {
-      const data = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/income/all?token=${userID}`
-      );
-      const incomes = await data.json();
-      setIncomes(incomes);
-    };
-
-    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!userID) return;
+    setLoading(true);
+    const [year, month] = selectedMonth.split("-").map(Number);
+    const base = process.env.NEXT_PUBLIC_API_ENDPOINT;
+    const fetchMonth = async () => {
+      try {
+        const data = await fetch(
+          `${base}/income/all?token=${userID}&month=${month}`
+        );
+        const incomes = await data.json();
+        setIncomes(Array.isArray(incomes) ? incomes : []);
+      } catch (e) {
+        setIncomes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMonth();
+  }, [userID, selectedMonth]);
 
   const handleDelete = async (id) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/income/remove`, {
@@ -55,8 +68,9 @@ export default function Incomes() {
   };
 
   const filteredIncomes = incomes.filter((income) => {
-    const y = income?.date?.year;
-    const m = income?.date?.month;
+    // API now returns flat date fields: year, month
+    const y = income?.year;
+    const m = income?.month;
     if (!y || !m) return false;
     const key = `${y}-${String(m).padStart(2, "0")}`;
     return key === selectedMonth;
@@ -73,7 +87,9 @@ export default function Incomes() {
           className="rounded-md border px-3 py-2 text-sm"
         />
       </div>
-      {filteredIncomes.length === 0 ? (
+      {loading ? (
+        <LoadingState />
+      ) : filteredIncomes.length === 0 ? (
         <EmptyState />
       ) : (
         <ul className="space-y-3">
