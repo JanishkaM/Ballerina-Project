@@ -13,6 +13,7 @@ Default ports:
 - Node.js 18.18+ (Node 20 LTS recommended)
 - npm (bundled with Node)
 - Ballerina Swan Lake 2201.12.7 (or newer in the 2201.12.x line)
+- MySQL (any recent version)
 
 Optional:
 - VS Code + REST Client extension (to run sample requests in `server/client.rest`)
