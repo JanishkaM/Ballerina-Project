@@ -1,0 +1,57 @@
+### There is all the API endpoints
+POST http://localhost:9092/auth
+
+{
+  "email": "alice@example.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:9092/income/add
+
+{
+  "token": 9878788,
+  "amount": 5000,
+  "date": {
+    "year": 2025,
+    "month": 8,
+    "day": 18
+  },
+  "name": "Salary"
+}
+
+###
+GET http://localhost:9092/income/all?token=9878788
+
+###
+DELETE http://localhost:9092/income/remove
+
+{
+  "id": 1,
+  "token": 9878788
+}
+
+###
+POST http://localhost:9092/expense/add
+
+{
+  "token": 9878788,
+  "amount": 5000,
+  "date": {
+    "year": 2025,
+    "month": 8,
+    "day": 18
+  },
+  "name": "Groceries"
+}
+
+###
+GET http://localhost:9092/expense/all?token=9878788
+
+###
+DELETE http://localhost:9092/expense/remove
+
+{
+  "id": 1,
+  "token": 9878788
+}
