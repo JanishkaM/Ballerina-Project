@@ -25,32 +25,55 @@ Optional:
 └─ client/      # Next.js app
 ```
 
-## Quick start (development)
-
-1) Start the API (server)
-
-```bash
-cd server
-bal run
-```
-
-The API listens on http://localhost:9092.
-
-2) Start the web app (client)
-
-```bash
-cd client
-npm install
-
-# create env file if missing
-[ -f .env.local ] || cp .env.local.example .env.local 2>/dev/null || true
-# set backend URL (append or update as needed)
-echo "NEXT_PUBLIC_API_ENDPOINT=http://localhost:9092" >> .env.local
 
 npm run dev
-```
 
-Open http://localhost:3000 in your browser.
+## How to Set Up and Run
+
+### 1. Install what you need
+
+- Node.js (version 18 or newer)
+- npm (comes with Node.js)
+- Ballerina (version 2201.12.7 or newer)
+- MySQL (any recent version)
+
+### 2. Set up the database
+
+- Open MySQL on your computer.
+- Create a new database called `logaira`.
+- Import the file `server/resources/sql/logaira.sql` into MySQL. This sets up all the tables.
+
+### 3. Start the server (API)
+
+- Go to the `server` folder:
+  ```bash
+  cd server
+  ```
+- Run the server:
+  ```bash
+  bal run
+  ```
+- The server will start on http://localhost:9092
+
+### 4. Start the web app (client)
+
+- Go to the `client` folder:
+  ```bash
+  cd client
+  ```
+- Install the needed packages:
+  ```bash
+  npm install
+  ```
+- Make sure there is a file called `.env.local` in the `client` folder. If not, create it and add this line:
+  ```
+  NEXT_PUBLIC_API_ENDPOINT=http://localhost:9092
+  ```
+- Start the web app:
+  ```bash
+  npm run dev
+  ```
+- Open http://localhost:3000 in your browser.
 
 ## Environment variables (client)
 
